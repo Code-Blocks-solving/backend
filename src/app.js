@@ -6,6 +6,7 @@ const studentRoute = require('./routes/student_route');
 const mentorRoute = require('./routes/mentor_route');
 const codeBlockRoute = require('./routes/code_block_route');
 console.log('initApp');
+const session = require('express-session');
 
 const initApp = () => {
   const promise = new Promise((resolve) => {
@@ -24,6 +25,9 @@ const initApp = () => {
         res.header('Access-Control-Allow-Credentials', 'true');
         next();
       });
+
+  
+
       app.use('/student', studentRoute);
       app.use('/mentor', mentorRoute);
       app.use('/codeblock', codeBlockRoute);

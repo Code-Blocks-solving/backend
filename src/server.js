@@ -41,15 +41,61 @@ const io = socketIo(server, {
 
 
 //const io = socketIo(server);
+
+// let firstClientId = null;
+
+// io.on('connection', (socket) => {
+//   //console.log('New client connected');
+//   if (firstClientId === null) {
+//     firstClientId = socket.id;
+//     console.log('firstClientId', firstClientId);
+//  }
+//  socket.emit('firstClientId', firstClientId);
+//  console.log('socket.id', socket.id);
+
+//   socket.on('codeUpdate', async ({ id, code }) => {
+//     try {
+//       console.log('codeUpdate event received');
+//       updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(id, {code}, { new: true });
+//       io.emit('codeUpdate', updatedCodeBlock);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   });
+
+//   socket.on('disconnect', () => {
+//     if (socket.id === firstClientId) {
+//       firstClientId = null;
+//     }
+//     console.log('Client disconnected');
+//   });
+// });
+
+const express = require('express');
+const session = require('express-session');
+const socketIO = require('socket.io');
+//const server = require('http').createServer(app);
+
+
+app.use(session({
+  secret: 'your secret',
+  resave: false,
+  saveUninitialized: true,
+}));
 let firstClientId = null;
+let clientCount = 0;
 
 io.on('connection', (socket) => {
-  console.log('New client connected');
+  clientCount++;
+  console.log(`Client connected. Total clients: ${clientCount}`);
+  
   if (firstClientId === null) {
     firstClientId = socket.id;
- }
- socket.emit('firstClientId', firstClientId);
-
+    console.log('firstClientId', firstClientId);
+  }
+  
+  socket.emit('firstClientId', firstClientId);
+  console.log('socket.id', socket.id);
 
   socket.on('codeUpdate', async ({ id, code }) => {
     try {
@@ -61,11 +107,38 @@ io.on('connection', (socket) => {
     }
   });
 
+  app.get('/firstClientCheck', (req, res) => {
+    if (clientCount === 1) {
+      res.json({ isFirstClient: true, clientId: firstClientId });
+      console.log('firstClient');
+    } else {
+      res.json({ isFirstClient: false, clientId: firstClientId });
+      console.log('not firstClient');
+    }
+});
+
   socket.on('disconnect', () => {
-    console.log('Client disconnected');
+    if(clientCount === 0) {
+      clientCount = 0;
+    }
+    else{
+      clientCount--;
+    }
+   
+    console.log(`Client disconnected. Total clients: ${clientCount}`);
+    
+    if (socket.id === firstClientId) {
+      firstClientId = null;
+    }
   });
 });
 
+
+
+
+
 });
+
+
 
 module.exports = server;
