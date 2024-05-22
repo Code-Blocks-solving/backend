@@ -11,7 +11,7 @@ const initApp = () => {
     const db = mongoose.connection;
     db.once('open', () => console.log('Connected to Database'));
     db.on('error', (error) => console.error(error));
-    const url = process.env.DB_URL;
+    const url = 'mongodb://localhost/moveo';
     mongoose.connect(url).then(() => {
       const app = express();
       app.use(express.json());
