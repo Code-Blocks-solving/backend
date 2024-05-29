@@ -101,17 +101,32 @@ io.on('connection', (socket) => {
   socket.emit('firstClientId', firstClientId);
   console.log('socket.id', socket.id);
 
+  // socket.on('codeUpdate', async ({ id, code }) => {
+  //   try {
+  //     const objectId = new ObjectId(id);
+  //     console.log('codeUpdate event received');
+  //     updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(objectId, {code}, { new: true });
+  //     io.emit('codeUpdate', updatedCodeBlock);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // });
+
   socket.on('codeUpdate', async ({ id, code }) => {
     try {
-      const objectId = new ObjectId(id);
-      console.log('codeUpdate event received');
-      updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(objectId, {code}, { new: true });
-      io.emit('codeUpdate', updatedCodeBlock);
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        const objectId = new ObjectId(id);
+        console.log('codeUpdate event received');
+        updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(objectId, {code}, { new: true });
+        io.emit('codeUpdate', updatedCodeBlock);
+      } else {
+        console.error('Invalid id:', id);
+      }
     } catch (error) {
       console.error(error);
     }
   });
-
+  
   app.get('/firstClientCheck', (req, res) => {
     if (clientCount === 1) {
       res.json({ isFirstClient: true, clientId: firstClientId });
