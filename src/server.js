@@ -25,6 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
   // };
   // server = https.createServer(options2, app);
   // server.listen(process.env.HTTPS_PORT);
+  server = http.createServer(app);
   server.listen(process.env.PORT);
 }
 
