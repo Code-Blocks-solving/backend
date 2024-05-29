@@ -77,6 +77,7 @@ const express = require('express');
 const session = require('express-session');
 const socketIO = require('socket.io');
 //const server = require('http').createServer(app);
+const { ObjectId } = mongoose.Types;
 
 
 app.use(session({
@@ -101,8 +102,9 @@ io.on('connection', (socket) => {
 
   socket.on('codeUpdate', async ({ id, code }) => {
     try {
+      const objectId = new ObjectId(id);
       console.log('codeUpdate event received');
-      updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(ObjectId(id), {code}, { new: true });
+      updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(objectId, {code}, { new: true });
       io.emit('codeUpdate', updatedCodeBlock);
     } catch (error) {
       console.error(error);
