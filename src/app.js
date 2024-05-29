@@ -37,7 +37,7 @@ const initApp = async () => {
   db.on('error', (error) => console.error(error));
   //const url = 'mongodb://localhost/moveo';
   
-  const url = 'mongodb+srv://michal:michal123@cluster0.mooxvvy.mongodb.net/moveodb.moveodb';
+  const url = 'mongodb+srv://michal:michal123@cluster0.mooxvvy.mongodb.net/moveodb';
   await mongoose.connect(url);
   const app = express();
   app.use(express.json());
