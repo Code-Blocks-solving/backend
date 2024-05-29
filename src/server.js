@@ -102,7 +102,7 @@ io.on('connection', (socket) => {
   socket.on('codeUpdate', async ({ id, code }) => {
     try {
       console.log('codeUpdate event received');
-      updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(id, {code}, { new: true });
+      updatedCodeBlock = await CodeBlockModel.findByIdAndUpdate(ObjectId(id), {code}, { new: true });
       io.emit('codeUpdate', updatedCodeBlock);
     } catch (error) {
       console.error(error);
