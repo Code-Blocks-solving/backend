@@ -49,6 +49,7 @@ const initApp = async () => {
     res.header('Access-Control-Allow-Credentials', 'true');
     next();
   });
+  app.use('/', codeBlockRoute);
   app.use('/codeblock', codeBlockRoute);
  // app.use('/public', express.static('public'));
   return app;
